@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
+import javafx.stage.Window;
 import net.longosz.PhoneBook.model.Person;
 import net.longosz.PhoneBook.ui.validation.UIValidationException;
 
@@ -107,9 +108,13 @@ public class Controller {
     }
 
     private void showErrorDialog(String message, ActionEvent errorSourceEvent) {
+        showErrorDialog(message, ((Node) errorSourceEvent.getTarget()).getScene().getWindow());
+    }
+
+    private void showErrorDialog(String message, Window parentWindow) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(((Node) errorSourceEvent.getTarget()).getScene().getWindow());
+        alert.initOwner(parentWindow);
         alert.setTitle("Error");
         alert.setHeaderText(message);
 
