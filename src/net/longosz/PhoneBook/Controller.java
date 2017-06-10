@@ -4,11 +4,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import net.longosz.PhoneBook.model.Person;
+import net.longosz.PhoneBook.ui.validation.UIValidationException;
 
 public class Controller {
 
@@ -49,7 +53,11 @@ public class Controller {
 
     @FXML
     void addEntry(ActionEvent event) {
-        phoneList.add(new Person(name.getText(), phone.getText()));
+        try {
+            phoneList.add(new Person(name.getText(), phone.getText()));
+        } catch (UIValidationException e) {
+            showErrorDialog(e.getLocalizedMessage(), event);
+        }
     }
 
     private void resetInputControls() {
@@ -62,9 +70,15 @@ public class Controller {
         Person person = phoneListView.getSelectionModel().getSelectedItem();
 
         if (person != null) {
-            person.setName(name.getText());
-            person.setPhone(phone.getText());
-            phoneListView.refresh();
+            try {
+                person.setName(name.getText());
+                person.setPhone(phone.getText());
+                phoneListView.refresh();
+            } catch (UIValidationException e) {
+                showErrorDialog(e.getLocalizedMessage(), event);
+            }
+        } else {
+            showErrorDialog("Select an entry before trying to update it", event);
         }
     }
 
@@ -75,6 +89,18 @@ public class Controller {
         if (person != null) {
             phoneList.remove(person);
             phoneListView.refresh();
+        } else {
+            showErrorDialog("Select an entry before trying to delete it", event);
         }
+    }
+
+    private void showErrorDialog(String message, ActionEvent errorSourceEvent) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(((Node) errorSourceEvent.getTarget()).getScene().getWindow());
+        alert.setTitle("Error");
+        alert.setHeaderText(message);
+
+        alert.showAndWait();
     }
 }
