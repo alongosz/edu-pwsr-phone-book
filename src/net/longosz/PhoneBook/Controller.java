@@ -2,6 +2,7 @@ package net.longosz.PhoneBook;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -33,5 +34,10 @@ public class Controller {
         phoneListView.setItems(phoneList);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+    }
+
+    @FXML
+    void addEntry(ActionEvent event) {
+        phoneList.add(new Person(name.getText(), phone.getText()));
     }
 }
