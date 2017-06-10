@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Window;
+import net.longosz.PhoneBook.io.IOService;
 import net.longosz.PhoneBook.model.Person;
 import net.longosz.PhoneBook.ui.validation.UIValidationException;
 
@@ -35,10 +36,20 @@ public class Controller {
     @FXML
     private TableColumn<Person, String> phoneColumn;
 
-    private final ObservableList<Person> phoneList = FXCollections.observableArrayList();
+    private ObservableList<Person> phoneList = FXCollections.observableArrayList();
+
+    private IOService ioService;
 
     @FXML
     public void initialize() {
+        // read data from the file
+        ioService = new IOService("phonebook.tsv", "\t");
+        try {
+            phoneList = ioService.read();
+        } catch (UIValidationException e) {
+            showErrorDialog(e.getMessage(), phoneListView.getScene().getWindow());
+        }
+
         // disable update and delete until a PhoneBook entry gets selected
         btnUpdate.setDisable(true);
         btnDelete.setDisable(true);
@@ -66,6 +77,7 @@ public class Controller {
     void addEntry(ActionEvent event) {
         try {
             phoneList.add(new Person(name.getText(), phone.getText()));
+            ioService.write(phoneList);
         } catch (UIValidationException e) {
             showErrorDialog(e.getLocalizedMessage(), event);
         }
@@ -87,6 +99,7 @@ public class Controller {
                 person.setName(name.getText());
                 person.setPhone(phone.getText());
                 phoneListView.refresh();
+                ioService.write(phoneList);
             } catch (UIValidationException e) {
                 showErrorDialog(e.getLocalizedMessage(), event);
             }
@@ -98,12 +111,16 @@ public class Controller {
     @FXML
     void deleteEntry(ActionEvent event) {
         Person person = phoneListView.getSelectionModel().getSelectedItem();
-
-        if (person != null) {
-            phoneList.remove(person);
-            phoneListView.refresh();
-        } else {
-            showErrorDialog("Select an entry before trying to delete it", event);
+        try {
+            if (person != null) {
+                phoneList.remove(person);
+                phoneListView.refresh();
+                ioService.write(phoneList);
+            } else {
+                showErrorDialog("Select an entry before trying to delete it", event);
+            }
+        } catch (UIValidationException e) {
+            showErrorDialog(e.getMessage(), event);
         }
     }
 
