@@ -35,7 +35,7 @@
       <ButtonBar layoutX="15.0" layoutY="95.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="270.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
         <buttons>
           <Button mnemonicParsing="false" text="Delete" />
-            <Button mnemonicParsing="false" text="Update" />
+            <Button mnemonicParsing="false" onAction="#updateEntry" text="Update" />
             <Button minWidth="40.0" mnemonicParsing="false" onAction="#addEntry" prefHeight="12.0" text="Add" />
         </buttons>
       </ButtonBar>

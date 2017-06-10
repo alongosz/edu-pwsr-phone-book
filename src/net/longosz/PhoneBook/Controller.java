@@ -56,4 +56,15 @@ public class Controller {
         name.setText("");
         phone.setText("");
     }
+
+    @FXML
+    void updateEntry(ActionEvent event) {
+        Person person = phoneListView.getSelectionModel().getSelectedItem();
+
+        if (person != null) {
+            person.setName(name.getText());
+            person.setPhone(phone.getText());
+            phoneListView.refresh();
+        }
+    }
 }
