@@ -5,10 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import net.longosz.PhoneBook.model.Person;
@@ -23,6 +20,12 @@ public class Controller {
     private TextField phone;
 
     @FXML
+    private Button btnDelete;
+
+    @FXML
+    private Button btnUpdate;
+
+    @FXML
     private TableView<Person> phoneListView;
 
     @FXML
@@ -35,6 +38,10 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        // disable update and delete until a PhoneBook entry gets selected
+        btnUpdate.setDisable(true);
+        btnDelete.setDisable(true);
+
         phoneListView.setItems(phoneList);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
@@ -44,6 +51,9 @@ public class Controller {
             if (newValue != null) {
                 name.setText(newValue.getName());
                 phone.setText(newValue.getPhone());
+
+                btnUpdate.setDisable(false);
+                btnDelete.setDisable(false);
             } else {
                 // clear input data if row gets unselected
                 resetInputControls();
@@ -63,6 +73,8 @@ public class Controller {
     private void resetInputControls() {
         name.setText("");
         phone.setText("");
+        btnUpdate.setDisable(true);
+        btnDelete.setDisable(true);
     }
 
     @FXML
