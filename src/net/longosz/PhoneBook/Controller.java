@@ -67,4 +67,14 @@ public class Controller {
             phoneListView.refresh();
         }
     }
+
+    @FXML
+    void deleteEntry(ActionEvent event) {
+        Person person = phoneListView.getSelectionModel().getSelectedItem();
+
+        if (person != null) {
+            phoneList.remove(person);
+            phoneListView.refresh();
+        }
+    }
 }
