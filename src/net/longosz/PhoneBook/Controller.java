@@ -34,10 +34,26 @@ public class Controller {
         phoneListView.setItems(phoneList);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
+        // update input controls if a PhoneBook entry got selected
+        phoneListView.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (newValue != null) {
+                name.setText(newValue.getName());
+                phone.setText(newValue.getPhone());
+            } else {
+                // clear input data if row gets unselected
+                resetInputControls();
+            }
+        });
     }
 
     @FXML
     void addEntry(ActionEvent event) {
         phoneList.add(new Person(name.getText(), phone.getText()));
+    }
+
+    private void resetInputControls() {
+        name.setText("");
+        phone.setText("");
     }
 }
